@@ -2,16 +2,11 @@ import mysql.connector
 import pandas as pd
 from sqlalchemy import create_engine
 
-db_user = ""
-db_password = ""
-db_host = ""
-db_name = ""
-
 myDB = {
-    "user": db_user,
-    "password": db_password,
-    "host": db_host,
-    "database": db_name
+    "user": input("user: "),
+    "password": input("password: "),
+    "host": input("host: "),
+    "database": input("database: ")
 }
 connect = mysql.connector.connect(**myDB)
 cursor = connect.cursor()
@@ -171,7 +166,7 @@ def readSubMenu_listAllEmployee():
         return
     else:
         queryReadAll = "SELECT * FROM employee_records"
-        engine = create_engine(f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}")
+                engine = create_engine(f"mysql+pymysql://{myDB["user"]}:{myDB["password"]}@{myDB["host"]}/{myDB["database"]}")
         df = pd.read_sql(queryReadAll, engine)
         df["ID"] = df["ID"].astype(str).str.zfill(6)
         print(df)
@@ -217,7 +212,7 @@ def readSubMenu_searchEmployee():
                         cursor.execute(queryFindEmployee, (userInput,))
                         result = cursor.fetchall()
                         if result:
-                            engine = create_engine("mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}")
+                            engine = create_engine(f"mysql+pymysql://{myDB["user"]}:{myDB["password"]}@{myDB["host"]}/{myDB["database"]}")
                             with engine.connect() as connection:
                                 df = pd.read_sql(queryFindEmployee, connection, params=(userInput,))
                                 df["ID"] = df["ID"].astype(str).str.zfill(6)
